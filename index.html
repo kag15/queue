@@ -774,7 +774,7 @@ async function load() {
         console.log("JSONBin response:", JSON.stringify(json).slice(0,100));
         data = json.record || json;
         localStorage.setItem("myqueue_v7", JSON.stringify(data));
-        setTimeout(() => toast("✓ Synced from cloud"), 500);
+        setTimeout(() => toast("✓ Synced"), 800);
         return;
       } else {
         console.log("JSONBin responded:", res.status);
@@ -1322,13 +1322,7 @@ function closeEditModal() {
 
 // Modal overlay click handled via onclick attribute
 
-load().then(() => { 
-  render(); 
-  // Show sync status
-  const status = BIN_ID ? `Bin: ${BIN_ID.slice(0,8)}...` : "No bin ID";
-  console.log("Sync status:", status);
-  setTimeout(() => toast("Bin: " + (BIN_ID ? BIN_ID.slice(0,8) + "..." : "none")), 500);
-});
+load().then(() => render());
 </script>
 
 <div class="modal-overlay" id="review-modal" style="display:none" onclick="if(event.target===this)skipReview()">
