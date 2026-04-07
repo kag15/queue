@@ -766,7 +766,6 @@ async function load() {
       const res = await fetch(`${JSONBIN_URL}/${BIN_ID}`, {
         method: "GET",
         headers: { 
-          "X-Access-Key": JSONBIN_KEY,
           "X-Bin-Meta": "false"
         }
       });
