@@ -763,7 +763,7 @@ let saveTimer = null;
 async function load() {
   try {
     if (BIN_ID) {
-      const res = await fetch(`${JSONBIN_URL}/${BIN_ID}/latest`, {
+      const res = await fetch(`${JSONBIN_URL}/${BIN_ID}`, {
         method: "GET",
         headers: { 
           "X-Access-Key": JSONBIN_KEY,
