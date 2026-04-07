@@ -772,9 +772,10 @@ async function load() {
       });
       if (res.ok) {
         const json = await res.json();
+        console.log("JSONBin response:", JSON.stringify(json).slice(0,100));
         data = json.record || json;
         localStorage.setItem("myqueue_v7", JSON.stringify(data));
-        console.log("Loaded from JSONBin ✓");
+        setTimeout(() => toast("✓ Synced from cloud"), 500);
         return;
       } else {
         console.log("JSONBin responded:", res.status);
