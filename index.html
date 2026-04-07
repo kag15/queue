@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Queue">
+<title>Queue</title>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --white:  #fdf9f5;
+    --display: 'Work Sans', sans-serif;
+    --off:    #f5f0ea;
+    --ink:    #111111;
+    --muted:  #999999;
+    --line:   #ebebeb;
+
+    /* Category pairings from palette photo */
+    --books-bg:   #FFC0C0;
+    --books-text: #C45F3F;
+
+    --film-bg:    #008471;
+    --film-text:  #F4D242;
+
+    --tv-bg:      #80B0E8;
+    --tv-text:    #2a3d12;
+
+    --pod-bg:     #F4D242;
+    --pod-text:   #5a5e10;
+
+    --reads-bg:   #D1CAEA;
+    --reads-text: #b03070;
+  }
+
+  html, body {
+    min-height: 100%;
+    background: var(--white);
+    color: var(--ink);
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Header ── */
+  .header {
+    background: var(--white);
+    padding: 1.4rem 1.4rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .wordmark {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.04em;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    line-height: 1;
+  }
+
+  .wordmark-sub {
+    font-size: 0.54rem;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 0.15rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .tabs {
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin: 0 -1.4rem;
+    padding: 0 1.4rem;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+
+  .tab {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 0.5rem 1rem 0.5rem 0;
+    margin-right: 0.25rem;
+    margin-bottom: -1px;
+    cursor: pointer;
+    white-space: nowrap;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    transition: all 0.15s;
+  }
+
+  .tab.active {
+    color: var(--ink);
+    font-weight: 700;
+    border-bottom-color: transparent;
+  }
+
+  /* ── Main ── */
+  .main {
+    padding: 2rem 1.4rem 6rem;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  /* ── Page heading ── */
+  .pg-head {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 0.15rem;
+  }
+
+  .pg-sub {
+    font-size: 0.58rem;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 2rem;
+  }
+
+  /* ── Category label chip ── */
+  .cat-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.55rem;
+    border-radius: 50px;
+    font-size: 0.54rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* ── Now cards ── */
+  .now-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+    gap: 0.85rem;
+  }
+
+  .now-card {
+    border-radius: 14px;
+    padding: 1.1rem 1rem 0.9rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 140px;
+    border: 1px solid rgba(0,0,0,0.06);
+  }
+
+  .now-card-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    margin-top: 0.45rem;
+    margin-bottom: 0.3rem;
+    color: var(--ink);
+    flex: 1;
+  }
+
+  .now-card-note {
+    font-size: 0.65rem;
+    font-weight: 300;
+    color: rgba(0,0,0,0.45);
+    margin-bottom: 0.8rem;
+    line-height: 1.45;
+  }
+
+  .now-card-btns {
+    display: flex;
+    gap: 0.35rem;
+  }
+
+  /* ── Cat section ── */
+  .cat-section { margin-bottom: 2.2rem; }
+
+  .cat-section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 0;
+  }
+
+  .cat-slots {
+    font-size: 0.56rem;
+    font-weight: 400;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+
+  /* ── Queue rows ── */
+  .q-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .q-row-left { flex: 1; min-width: 0; }
+
+  .q-row-num {
+    font-size: 0.54rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.18rem;
+  }
+
+  .q-row-num.next { color: var(--ink); font-weight: 700; }
+
+  .q-row-title {
+    font-size: 0.92rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    color: #cccccc;
+    margin-bottom: 0.15rem;
+  }
+
+  .q-row-title.next { color: var(--ink); }
+
+  .q-row-note {
+    font-size: 0.63rem;
+    font-weight: 300;
+    color: var(--muted);
+    margin-bottom: 0.15rem;
+  }
+
+  .q-row-desc {
+    font-size: 0.68rem;
+    font-weight: 300;
+    color: var(--muted);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .q-row-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.28rem;
+    flex-shrink: 0;
+    padding-top: 0.1rem;
+  }
+
+  .empty-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.65rem 0;
+    border-bottom: 1px dashed var(--line);
+    opacity: 0.35;
+  }
+
+  .empty-row-num { font-size: 0.54rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+  .empty-row-label { font-size: 0.68rem; color: var(--muted); font-style: italic; }
+
+  /* ── Buttons ── */
+  .btn {
+    background: none;
+    border: 1px solid var(--line);
+    color: var(--muted);
+    padding: 0.22rem 0.55rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.58rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 6px;
+    white-space: nowrap;
+    transition: all 0.15s;
+    display: block;
+    text-align: center;
+  }
+
+  .btn:hover { border-color: var(--ink); color: var(--ink); }
+
+  .btn.solid {
+    background: none;
+    border-color: var(--line);
+    color: var(--muted);
+  }
+
+  .btn.solid:hover { opacity: 0.7; }
+
+  /* ── Pills ── */
+  .pills {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.4rem;
+  }
+
+  .pill {
+    background: none;
+    border: 1px solid var(--line);
+    color: var(--muted);
+    padding: 0.28rem 0.75rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.58rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 50px;
+    transition: all 0.15s;
+  }
+
+  .pill.active { background: var(--ink); border-color: var(--ink); color: var(--white); }
+
+  /* ── Library ── */
+  .lib-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .lib-body { flex: 1; min-width: 0; }
+
+  .lib-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin-bottom: 0.12rem;
+    line-height: 1.2;
+  }
+
+  .lib-note { font-size: 0.62rem; font-weight: 300; color: var(--muted); margin-bottom: 0.12rem; }
+
+  .lib-desc {
+    font-size: 0.67rem;
+    font-weight: 300;
+    color: var(--muted);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .lib-actions { display: flex; flex-direction: column; gap: 0.28rem; flex-shrink: 0; }
+
+  /* ── Done ── */
+  .done-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  .done-card {
+    border-radius: 14px;
+    padding: 1rem;
+    border: 1px solid rgba(0,0,0,0.06);
+    transition: transform 0.18s;
+    cursor: default;
+  }
+
+  .done-card:hover { transform: scale(1.02); }
+
+  .done-card-title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    line-height: 1.25;
+    margin-top: 0.4rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .done-card-date {
+    font-size: 0.56rem;
+    font-weight: 400;
+    color: rgba(0,0,0,0.4);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-top: 1px solid rgba(0,0,0,0.08);
+    padding-top: 0.4rem;
+    margin-top: auto;
+  }
+
+  /* ── Add form ── */
+  .form-card {
+    background: var(--off);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 1.2rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .form-label {
+    font-size: 0.56rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 0.85rem;
+  }
+
+  .form-row { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
+
+  .form-input {
+    flex: 1;
+    min-width: 120px;
+    background: var(--white);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    padding: 0.6rem 0.75rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 300;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .form-input:focus { border-color: var(--ink); }
+
+  .form-select {
+    background: var(--white);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    padding: 0.6rem 0.75rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 300;
+    border-radius: 8px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .form-submit {
+    width: 100%;
+    background: var(--ink);
+    border: none;
+    color: var(--white);
+    padding: 0.7rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 0.4rem;
+    transition: opacity 0.15s;
+  }
+
+  .form-submit:hover { opacity: 0.75; }
+
+  .claude-tip {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 1.1rem 1.2rem;
+    font-size: 0.76rem;
+    color: var(--muted);
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  .claude-tip strong { color: var(--ink); font-weight: 600; }
+
+  /* ── Empty ── */
+  .empty-state {
+    background: var(--off);
+    border: 1px dashed var(--line);
+    border-radius: 14px;
+    text-align: center;
+    padding: 3rem 1.5rem;
+  }
+
+  .empty-h {
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #dddddd;
+    margin-bottom: 0.4rem;
+  }
+
+  .empty-p { font-size: 0.72rem; color: var(--muted); line-height: 1.6; font-weight: 300; }
+
+  /* ── Toast ── */
+  .toast {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ink);
+    color: var(--white);
+    padding: 0.6rem 1.2rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-radius: 50px;
+    z-index: 999;
+    opacity: 0;
+    transition: opacity 0.25s;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  .toast.show { opacity: 1; }
+
+  /* ── Review modal ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: 200;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  .modal {
+    background: var(--white);
+    border-radius: 18px 18px 14px 14px;
+    padding: 1.5rem 1.25rem 1.25rem;
+    width: 100%;
+    max-width: 460px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+  }
+
+  .modal-title {
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 800;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin-bottom: 0.2rem;
+  }
+
+  .modal-sub {
+    font-size: 0.62rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 1.1rem;
+    font-weight: 400;
+  }
+
+  .stars {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+  }
+
+  .star {
+    font-size: 1.6rem;
+    cursor: pointer;
+    transition: transform 0.1s;
+    line-height: 1;
+    color: #e0dbd4;
+    user-select: none;
+  }
+
+  .star.lit { color: #F7C948; }
+  .star:hover { transform: scale(1.15); }
+
+  .modal-textarea {
+    width: 100%;
+    background: var(--off);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    padding: 0.65rem 0.75rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 300;
+    border-radius: 10px;
+    outline: none;
+    resize: none;
+    line-height: 1.5;
+    margin-bottom: 0.85rem;
+    transition: border-color 0.15s;
+  }
+
+  .modal-textarea:focus { border-color: var(--ink); }
+
+  .modal-btns {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .modal-done-card {
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+
+  .modal-done-card:hover { transform: scale(1.01); }
+
+  .done-card-review {
+    font-size: 0.68rem;
+    color: var(--muted);
+    font-weight: 300;
+    line-height: 1.4;
+    margin-top: 0.3rem;
+    font-style: italic;
+  }
+
+  .done-card-stars {
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    margin-top: 0.25rem;
+    color: #F7C948;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="wordmark">Queue</div>
+  <div class="wordmark-sub">curated with claude</div>
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('now',this)">Now</button>
+    <button class="tab" onclick="showTab('upnext',this)">Up Next</button>
+    <button class="tab" onclick="showTab('library',this)">Library</button>
+    <button class="tab" onclick="showTab('done',this)">Done</button>
+    <button class="tab" onclick="showTab('add',this)">+ Add</button>
+  </div>
+</div>
+
+<div class="main">
+  <div id="tab-now"></div>
+  <div id="tab-upnext" style="display:none"></div>
+  <div id="tab-library" style="display:none"></div>
+  <div id="tab-done" style="display:none"></div>
+  <div id="tab-add" style="display:none"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const CATS = {
+  books:     { label:"Books",      bg:"#F76F54", text:"#ffffff" },
+  film:      { label:"Film",       bg:"#FBB28B", text:"#7a3a10" },
+  tv:        { label:"TV",         bg:"#A3C1E2", text:"#ffffff" },
+  podcast:   { label:"Podcasts",   bg:"#F7E289", text:"#7a6800" },
+  longreads: { label:"Long Reads", bg:"#6B515E", text:"#ffffff" },
+};
+
+const DESCS = {
+  "The Nightingale": "Two sisters in Nazi-occupied France make impossible choices. Devastating.",
+  "Yesterday": "A Japanese novel about memory, friendship, and the stories we tell ourselves.",
+  "The Goldfinch": "A boy survives a museum bombing and carries a stolen painting through life.",
+  "Everything I Never Told You": "A Chinese-American family unravels after their daughter's death.",
+  "The Vanishing Half": "Twin sisters who choose entirely different lives. About identity and reinvention.",
+  "Eleanor Oliphant is Completely Fine": "A socially isolated woman slowly opens up to the world.",
+  "Normal People": "Two Irish students fall in and out of love. Intimate and beautifully observed.",
+  "All the Light We Cannot See": "A blind French girl and a German soldier in WWII. Pulitzer-winning.",
+  "Life After Life": "A woman lives the same life over and over, each time differently.",
+  "Past Lives": "Childhood sweethearts separated by emigration reunite decades later.",
+  "The Worst Person in the World": "A young Oslo woman navigates love, career, and who she wants to be.",
+  "Aftersun": "A daughter revisits holiday memories with her young father. Stays with you.",
+  "Before Sunrise": "Two strangers spend one night talking in Vienna. The best conversation film.",
+  "In the Mood for Love": "Unspoken longing between two neighbours. Visually stunning.",
+  "Before Sunset": "The Vienna couple reunite in Paris nine years later.",
+  "Before Midnight": "Jesse and Céline wrestle with what long-term love really costs.",
+  "Wheel of Fortune and Fantasy": "Three short films about women navigating regret and desire.",
+  "Marriage Story": "A marriage ends. Both people are right. Emotionally devastating.",
+  "Sentimental Value": "A father and daughters reckon with loss. Joachim Trier · 2025.",
+  "Fleabag": "A sharp, funny, grieving woman speaks directly to you. One of the best things made.",
+  "The Bear": "A chef takes over his family's sandwich shop. Stressful, brilliant, human.",
+  "I May Destroy You": "A writer reconstructs the night she was assaulted. Raw and unforgettable.",
+  "Succession": "Four siblings war over a media empire. The best writing on television.",
+  "Severance": "Office workers have their memories split between work and home. Beautifully strange.",
+  "My Brilliant Friend": "Two women's friendship across a lifetime in Naples. Extraordinary.",
+  "The Moth": "Real people tell true stories live on stage. Honest and often life-changing.",
+  "This American Life": "One theme, multiple stories, every week. The gold standard.",
+  "Modern Love": "NYT essays about love and connection, read by actors.",
+  "Heavyweight": "Jonathan Goldstein helps people revisit the moments that changed their lives.",
+  "Radiolab": "Big questions about science and what it means to be alive.",
+  "You're Wrong About": "Reexamines misremembered cultural moments with warmth.",
+  "Revisionist History": "Malcolm Gladwell reconsiders overlooked events from the past.",
+  "Serial": "The podcast that started narrative true crime. Still compelling.",
+  "Longreads newsletter": "Curated narrative nonfiction delivered weekly.",
+  "The Browser": "Five outstanding articles from across the web, every day.",
+  "The Atlantic": "Long-form journalism on culture, politics, and ideas.",
+  "The Guardian Long Read": "Free, excellent range. Often the best piece you'll read all week.",
+  "Love Story": "The whirlwind romance and marriage of JFK Jr. and Carolyn Bessette — glamour, tragedy, and the crushing weight of a famous name.",
+};
+
+const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+let nextId = 500;
+let activeLibCat = "books";
+let activeDoneCat = "all";
+
+const DEFAULT = {
+  books: {
+    now: [{ id:100, title:"The Nightingale", note:"Kristin Hannah" }],
+    upnext: [],
+    library: [],
+    completed: [],
+  },
+  film: {
+    now: [],
+    upnext: [],
+    library: [],
+    completed: [],
+  },
+  tv: {
+    now: [{ id:101, title:"Love Story", note:"currently watching" }],
+    upnext: [],
+    library: [],
+    completed: [],
+  },
+  podcast: {
+    now: [{ id:102, title:"The Moth", note:"commute" }],
+    upnext: [],
+    library: [],
+    completed: [],
+  },
+  longreads: {
+    now: [],
+    upnext: [],
+    library: [],
+    completed: [],
+  },
+};
+
+const JSONBIN_KEY = "$2a$10$TZL/GGzf0JuZpdQY54fuWuC98U6.5H87G3Cz0pOgy/MyJ5bzv8xeK";
+const JSONBIN_URL = "https://api.jsonbin.io/v3/b";
+let BIN_ID = localStorage.getItem("queue_bin_id") || null;
+let data = {};
+let saveTimer = null;
+
+async function load() {
+  try {
+    if (BIN_ID) {
+      const res = await fetch(`${JSONBIN_URL}/${BIN_ID}/latest`, {
+        method: "GET",
+        headers: { 
+          "X-Access-Key": JSONBIN_KEY,
+          "X-Bin-Meta": "false"
+        }
+      });
+      if (res.ok) {
+        const json = await res.json();
+        data = json.record || json;
+        localStorage.setItem("myqueue_v7", JSON.stringify(data));
+        console.log("Loaded from JSONBin ✓");
+        return;
+      } else {
+        console.log("JSONBin responded:", res.status);
+      }
+    } else {
+      const saved = localStorage.getItem("myqueue_v7");
+      data = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEFAULT));
+      const res = await fetch(JSONBIN_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Access-Key": JSONBIN_KEY,
+          "X-Bin-Name": "queue",
+          "X-Bin-Private": "false"
+        },
+        body: JSON.stringify(data)
+      });
+      if (res.ok) {
+        const json = await res.json();
+        BIN_ID = json.metadata.id;
+        localStorage.setItem("queue_bin_id", BIN_ID);
+        console.log("Created JSONBin ✓ ID:", BIN_ID);
+      } else {
+        const txt = await res.text();
+        console.log("JSONBin create failed:", res.status, txt);
+      }
+      return;
+    }
+  } catch(e) {
+    console.log("JSONBin error:", e.message);
+  }
+  const s = localStorage.getItem("myqueue_v7");
+  if (s) { try { data = JSON.parse(s); return; } catch(e){} }
+  data = JSON.parse(JSON.stringify(DEFAULT));
+}
+
+function save() {
+  // Always save locally immediately
+  localStorage.setItem("myqueue_v7", JSON.stringify(data));
+  // Debounce JSONBin save to avoid too many requests
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(async () => {
+    if (!BIN_ID) return;
+    try {
+      await fetch(`${JSONBIN_URL}/${BIN_ID}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Access-Key": JSONBIN_KEY
+        },
+        body: JSON.stringify(data)
+      });
+    } catch(e) {
+      console.log("JSONBin save failed, data safe locally:", e);
+    }
+  }, 1000);
+}
+
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2200);
+}
+
+function chip(catId) {
+  const c = CATS[catId];
+  return `<span class="cat-chip" style="background:${c.bg};color:${c.text}">${c.label}</span>`;
+}
+
+// ── Now ──
+function renderNow() {
+  const el = document.getElementById("tab-now");
+  const items = Object.entries(data).flatMap(([catId,d]) => (d.now||[]).map(i=>({...i,catId})));
+
+  if (!items.length) {
+    el.innerHTML = `
+      <div class="pg-head">Now</div>
+      <div class="pg-sub">what you're in</div>
+      <div class="empty-state">
+        <div class="empty-h">Nothing active</div>
+        <div class="empty-p">Go to Up Next and tap "now →"<br>when you start something</div>
+      </div>`;
+    return;
+  }
+
+  el.innerHTML = `<div class="pg-head">Now</div><div class="pg-sub">what you're in</div><div class="now-grid"></div>`;
+  const grid = el.querySelector(".now-grid");
+
+  items.forEach(item => {
+    const c = CATS[item.catId];
+    const desc = DESCS[item.title] || item.note || "";
+    const card = document.createElement("div");
+    card.className = "now-card";
+    card.style.background = "#ffffff";
+    card.style.borderTop = `3px solid ${c.bg}`;
+    card.innerHTML = `
+      ${chip(item.catId)}
+      <div class="now-card-title" style="color:#111111">${item.title}</div>
+      ${desc ? `<div class="now-card-note">${desc}</div>` : ""}
+      <div class="now-card-btns">
+        <button class="btn solid" onclick="markNowDone('${item.catId}',${item.id})">✓ Done</button>
+        <button class="btn" onclick="nowBack('${item.catId}',${item.id})">Pause</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+// ── Up Next ──
+function renderUpNext() {
+  const el = document.getElementById("tab-upnext");
+  el.innerHTML = `<div class="pg-head">Up Next</div><div class="pg-sub">five per category</div>`;
+
+  Object.entries(CATS).forEach(([catId, c]) => {
+    const items = data[catId].upnext;
+    const sec = document.createElement("div");
+    sec.className = "cat-section";
+
+    const head = document.createElement("div");
+    head.className = "cat-section-head";
+    head.innerHTML = `${chip(catId)}<span class="cat-slots">${items.length} / 5</span>`;
+    sec.appendChild(head);
+
+    const list = document.createElement("div");
+    items.forEach((item, idx) => {
+      const desc = DESCS[item.title] || "";
+      const isNext = idx === 0;
+      const row = document.createElement("div");
+      row.className = "q-row";
+      row.innerHTML = `
+        <div class="q-row-left">
+          <div class="q-row-num${isNext?" next":""}">${isNext ? "Next up" : "#"+(idx+1)}</div>
+          <a href="${item.url || `https://www.google.com/search?q=${encodeURIComponent(item.title)}`}" target="_blank" style="text-decoration:none;display:block" class="q-row-title${isNext?" next":""}">${item.title}</a>
+          ${item.note ? `<div class="q-row-note">${item.note}</div>` : ""}
+          ${isNext && desc ? `<div class="q-row-desc">${desc}</div>` : ""}
+
+        </div>
+        <div class="q-row-actions">
+          ${isNext ? `<button class="btn solid" onclick="markDone('${catId}',${item.id})">✓ Done</button>` : ""}
+          <button class="btn" style="border-color:${c.bg};color:${c.text};background:${c.bg}" onclick="markNow('${catId}',${item.id})">Now →</button>
+          <button class="btn" onclick="toLibrary('${catId}',${item.id})">Lib</button>
+          <button class="btn" onclick="removeItem('${catId}','upnext',${item.id})">×</button>
+        </div>`;
+      list.appendChild(row);
+    });
+
+    for (let i = 0; i < Math.max(0, 5 - items.length); i++) {
+      const e = document.createElement("div");
+      e.className = "empty-row";
+      e.innerHTML = `<span class="empty-row-num">#${items.length+i+1}</span><span class="empty-row-label">pull from library</span>`;
+      list.appendChild(e);
+    }
+
+    sec.appendChild(list);
+    el.appendChild(sec);
+  });
+}
+
+// ── Library ──
+function renderLibrary() {
+  const el = document.getElementById("tab-library");
+  const c = CATS[activeLibCat];
+
+  el.innerHTML = `
+    <div class="pg-head">Library</div>
+    <div class="pg-sub">everything else</div>
+    <div class="pills">${Object.entries(CATS).map(([id,cat]) =>
+      `<button class="pill ${activeLibCat===id?"active":""}" onclick="setLibCat('${id}')">${cat.label} (${data[id].library.length})</button>`
+    ).join("")}</div>
+    <div id="lib-list"></div>`;
+
+  const list = document.getElementById("lib-list");
+  const items = data[activeLibCat].library;
+  const full = data[activeLibCat].upnext.length >= 5;
+
+  if (!items.length) {
+    list.innerHTML = `<div class="empty-state"><div class="empty-h">Empty</div><div class="empty-p">Add via + Add or ask Claude to fill it</div></div>`;
+    return;
+  }
+
+  items.forEach(item => {
+    const desc = DESCS[item.title] || "";
+    const row = document.createElement("div");
+    row.className = "lib-row";
+    row.innerHTML = `
+      <div class="lib-body">
+        <a href="${item.url || `https://www.google.com/search?q=${encodeURIComponent(item.title)}`}" target="_blank" style="text-decoration:none;display:block" class="lib-title">${item.title}</a>
+        ${item.note ? `<div class="lib-note">${item.note}</div>` : ""}
+        ${desc ? `<div class="lib-desc">${desc}</div>` : ""}
+
+      </div>
+      <div class="lib-actions">
+        <button class="btn" style="${!full?`border-color:${c.bg};color:${c.text};background:${c.bg}`:""}"
+          onclick="toUpNext('${activeLibCat}',${item.id})" ${full?"disabled":""}>↑ Next</button>
+        <button class="btn" onclick="removeItem('${activeLibCat}','library',${item.id})">×</button>
+      </div>`;
+    list.appendChild(row);
+  });
+}
+
+// ── Done ──
+function renderDone() {
+  const el = document.getElementById("tab-done");
+  const allDone = Object.entries(data).flatMap(([catId,d]) =>
+    (d.completed||[]).map(i=>({...i,catId}))
+  ).sort((a,b)=>new Date(b.completedAt)-new Date(a.completedAt));
+
+  const total = allDone.length;
+  const catsWithDone = Object.entries(CATS).filter(([c])=>data[c].completed.length>0);
+
+  const pillsHTML = total > 0 ? `<div class="pills">
+    <button class="pill ${activeDoneCat==="all"?"active":""}" onclick="setDoneCat('all')">All (${total})</button>
+    ${catsWithDone.map(([id,c])=>`<button class="pill ${activeDoneCat===id?"active":""}" onclick="setDoneCat('${id}')">${c.label} (${data[id].completed.length})</button>`).join("")}
+  </div>` : "";
+
+  el.innerHTML = `
+    <div class="pg-head">Done</div>
+    <div class="pg-sub">${total > 0 ? total+" logged" : "your log"}</div>
+    ${pillsHTML}
+    <div id="done-container"></div>`;
+
+  const filtered = activeDoneCat==="all" ? allDone : data[activeDoneCat].completed.map(i=>({...i,catId:activeDoneCat}));
+  const container = document.getElementById("done-container");
+
+  if (!total) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-h">Nothing yet</div><div class="empty-p">Mark something done in Up Next<br>and it'll appear here</div></div>`;
+    return;
+  }
+
+  const grid = document.createElement("div");
+  grid.className = "done-grid";
+
+  filtered.forEach(item => {
+    const c = CATS[item.catId];
+    const card = document.createElement("div");
+    card.className = "done-card";
+    card.style.background = "#ffffff";
+    card.style.borderTop = `3px solid ${c.bg}`;
+    card.className = "done-card modal-done-card";
+    card.onclick = () => openEditModal(item.catId, data[item.catId].completed.findIndex(c=>c.id===item.id));
+    card.innerHTML = `
+      ${chip(item.catId)}
+      <div class="done-card-title" style="color:#111111">${item.title}</div>
+      ${item.stars ? `<div class="done-card-stars">${"★".repeat(item.stars)}${"☆".repeat(5-item.stars)}</div>` : ""}
+      ${item.review ? `<div class="done-card-review">${item.review}</div>` : ""}
+      <div class="done-card-date">${item.day} ${item.month} ${item.year}</div>`;
+    grid.appendChild(card);
+  });
+
+  container.appendChild(grid);
+}
+
+// ── Add ──
+function renderAdd() {
+  document.getElementById("tab-add").innerHTML = `
+    <div class="pg-head">Add</div>
+    <div class="pg-sub">single or bulk</div>
+
+    <div class="form-card" style="margin-bottom:1rem">
+      <label class="form-label">Single item</label>
+      <div class="form-row">
+        <input class="form-input" id="add-title" placeholder="Title" style="flex:2">
+        <input class="form-input" id="add-note" placeholder="Note (optional)">
+      </div>
+      <div class="form-row">
+        <input class="form-input" id="add-url" placeholder="Link — paste a URL (optional)">
+      </div>
+      <div class="form-row">
+        <select class="form-select" id="add-cat">
+          ${Object.entries(CATS).map(([id,c])=>`<option value="${id}">${c.label}</option>`).join("")}
+        </select>
+        <select class="form-select" id="add-bucket">
+          <option value="upnext">Up Next</option>
+          <option value="library">Library</option>
+        </select>
+      </div>
+      <button class="form-submit" onclick="addItem()">Add \u2192</button>
+    </div>
+
+    <div class="form-card" style="margin-bottom:1rem">
+      <label class="form-label">Bulk add</label>
+      <div style="font-size:0.65rem;color:var(--muted);margin-bottom:0.6rem;font-weight:300;line-height:1.5">
+        One item per line: <em>Title | category | bucket | note | url</em><br>
+        Only Title and category are required. Use | to separate fields.<br>
+        e.g. <em>Yesteryear | books | library | A tradwife wakes up in the 1800s | https://...</em><br>
+        Categories: books, film, tv, podcast, longreads &nbsp;·&nbsp; Bucket: upnext or library
+      </div>
+      <textarea class="form-input" id="bulk-text" placeholder="Yesteryear | books | library | A tradwife wakes up in the 1800s&#10;The Substance | film | upnext&#10;Slow Horses | tv" rows="6" style="width:100%;resize:vertical;font-family:inherit;line-height:1.5"></textarea>
+      <button class="form-submit" style="margin-top:0.5rem" onclick="bulkAdd()">Bulk Add \u2192</button>
+    </div>
+
+    <div class="form-card" style="margin-bottom:1rem">
+      <label class="form-label">Backup &amp; restore</label>
+      <div style="font-size:0.65rem;color:var(--muted);margin-bottom:0.75rem;font-weight:300;line-height:1.5">
+        Export saves your queue as a file to your device. Import restores it.
+      </div>
+      <div style="display:flex;gap:0.5rem">
+        <button class="form-submit" style="background:#666666" onclick="exportData()">\u2193 Export</button>
+        <button class="form-submit" style="background:#666666" onclick="document.getElementById('import-file').click()">&uarr; Import</button>
+      </div>
+      <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
+    </div>
+
+    <div class="claude-tip">
+      <strong>Updating with Claude</strong><br><br>
+      Open Claude and say what changed. Ask it to format the response as a bulk-add list and paste it straight into the box above.
+    </div>`;
+}
+
+// ── Actions ──
+function markDone(catId, id) {
+  const item = data[catId].upnext.find(i=>i.id===id); if(!item) return;
+  data[catId].upnext = data[catId].upnext.filter(i=>i.id!==id);
+  save(); render();
+  showReviewModal(catId, item);
+}
+
+function markNow(catId, id) {
+  const item = data[catId].upnext.find(i=>i.id===id); if(!item) return;
+  data[catId].upnext = data[catId].upnext.filter(i=>i.id!==id);
+  (data[catId].now = data[catId].now||[]).push(item);
+  save(); render(); toast(`Started "${item.title}"`);
+  showTab("now", document.querySelectorAll(".tab")[0]);
+}
+
+function markNowDone(catId, id) {
+  const item = (data[catId].now||[]).find(i=>i.id===id); if(!item) return;
+  data[catId].now = data[catId].now.filter(i=>i.id!==id);
+  save(); render();
+  showReviewModal(catId, item);
+}
+
+function nowBack(catId, id) {
+  const item = (data[catId].now||[]).find(i=>i.id===id); if(!item) return;
+  data[catId].now = data[catId].now.filter(i=>i.id!==id);
+  data[catId].upnext.unshift(item);
+  save(); render(); toast("Paused");
+}
+
+function toLibrary(catId, id) {
+  const item = data[catId].upnext.find(i=>i.id===id); if(!item) return;
+  data[catId].upnext = data[catId].upnext.filter(i=>i.id!==id);
+  data[catId].library.unshift(item);
+  save(); render(); toast("Moved to Library");
+}
+
+function toUpNext(catId, id) {
+  if (data[catId].upnext.length>=5) { toast("Up Next is full"); return; }
+  const item = data[catId].library.find(i=>i.id===id); if(!item) return;
+  data[catId].library = data[catId].library.filter(i=>i.id!==id);
+  data[catId].upnext.push(item);
+  save(); render(); toast("Added to Up Next");
+}
+
+function removeItem(catId, bucket, id) {
+  data[catId][bucket] = data[catId][bucket].filter(i=>i.id!==id);
+  save(); render(); toast("Removed");
+}
+
+function addItem() {
+  const title = document.getElementById("add-title").value.trim();
+  if (!title) { toast("Add a title first"); return; }
+  const note = document.getElementById("add-note").value.trim();
+  const url = document.getElementById("add-url").value.trim();
+  const cat = document.getElementById("add-cat").value;
+  const bucket = document.getElementById("add-bucket").value;
+  const item = {id:nextId++, title, note, url};
+  if (bucket==="upnext" && data[cat].upnext.length>=5) {
+    data[cat].library.unshift(item);
+    toast("Up Next full — added to Library");
+  } else {
+    data[cat][bucket].unshift(item);
+    toast(`Added "${title}"`);
+  }
+  document.getElementById("add-title").value="";
+  document.getElementById("add-note").value="";
+  document.getElementById("add-url").value="";
+  save(); render();
+}
+
+function bulkAdd() {
+  const text = document.getElementById("bulk-text").value.trim();
+  if (!text) { toast("Paste something first"); return; }
+  const lines = text.split("\n").map(l => l.trim()).filter(Boolean);
+  let added = 0, skipped = 0;
+  const catMap = { books:"books", book:"books", film:"film", films:"film", movie:"film", movies:"film", tv:"tv", television:"tv", podcast:"podcast", podcasts:"podcast", longreads:"longreads", "long reads":"longreads", reads:"longreads", articles:"longreads" };
+
+  lines.forEach(line => {
+    const parts = line.split("|").map(p => p.trim());
+    const title = parts[0] || "";
+    const catRaw = (parts[1] || "").toLowerCase();
+    const bucketRaw = (parts[2] || "library").toLowerCase();
+    const note = parts[3] || "";
+    const url = parts[4] || "";
+    const cat = catMap[catRaw];
+    const bucket = bucketRaw.includes("next") ? "upnext" : "library";
+    if (!title || !cat) { skipped++; return; }
+    data[cat][bucket].unshift({id:nextId++, title, note, url});
+    added++;
+  });
+
+  save(); render();
+  toast(`Added ${added}${skipped ? ", " + skipped + " skipped" : ""}`);
+  document.getElementById("bulk-text").value="";
+}
+
+function exportData() {
+  const json = JSON.stringify(data, null, 2);
+  const blob = new Blob([json], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "queue-backup-" + new Date().toISOString().slice(0,10) + ".json";
+  a.click();
+  URL.revokeObjectURL(url);
+  toast("Backup saved");
+}
+
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const imported = JSON.parse(e.target.result);
+      data = imported;
+      save(); render();
+      toast("Queue restored from backup");
+    } catch(err) {
+      toast("Couldn't read that file");
+    }
+  };
+  reader.readAsText(file);
+}
+
+function setLibCat(c) { activeLibCat=c; renderLibrary(); }
+function setDoneCat(c) { activeDoneCat=c; renderDone(); }
+
+const TABS = ["now","upnext","library","done","add"];
+function showTab(name, btn) {
+  TABS.forEach(t => document.getElementById("tab-"+t).style.display = t===name?"":"none");
+  document.querySelectorAll(".tab").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+  if (name==="library") renderLibrary();
+  if (name==="done") renderDone();
+}
+
+function render() { renderNow(); renderUpNext(); renderLibrary(); renderDone(); renderAdd(); }
+
+
+// ── Review modal state ──
+let pendingDone = null; // { catId, item }
+let editTarget = null;  // { catId, idx }
+let currentStar = 0;
+let editStar = 0;
+
+function showReviewModal(catId, item) {
+  pendingDone = { catId, item };
+  currentStar = 0;
+  document.getElementById("modal-item-title").textContent = item.title;
+  document.getElementById("modal-note").value = "";
+  updateStars("modal-stars", 0);
+  document.getElementById("review-modal").style.display = "flex";
+}
+
+function setStar(n) {
+  currentStar = n;
+  updateStars("modal-stars", n);
+}
+
+function setEditStar(n) {
+  editStar = n;
+  updateStars("edit-stars", n);
+}
+
+function updateStars(containerId, n) {
+  document.querySelectorAll(`#${containerId} .star`).forEach((s, i) => {
+    s.classList.toggle("lit", i < n);
+  });
+}
+
+function confirmDone() {
+  if (!pendingDone) return;
+  const { catId, item } = pendingDone;
+  const review = document.getElementById("modal-note").value.trim();
+  const stars = currentStar;
+  const n = new Date();
+  data[catId].completed.unshift({
+    ...item,
+    completedAt: n.toISOString(),
+    day: n.getDate(),
+    month: MONTHS[n.getMonth()],
+    year: n.getFullYear(),
+    review,
+    stars,
+  });
+  pendingDone = null;
+  document.getElementById("review-modal").style.display = "none";
+  save(); render(); toast(`✓ "${item.title}" logged`);
+}
+
+function skipReview() {
+  if (!pendingDone) return;
+  const { catId, item } = pendingDone;
+  const n = new Date();
+  data[catId].completed.unshift({
+    ...item,
+    completedAt: n.toISOString(),
+    day: n.getDate(),
+    month: MONTHS[n.getMonth()],
+    year: n.getFullYear(),
+    review: "",
+    stars: 0,
+  });
+  pendingDone = null;
+  document.getElementById("review-modal").style.display = "none";
+  save(); render(); toast(`✓ "${item.title}" logged`);
+}
+
+function openEditModal(catId, idx) {
+  editTarget = { catId, idx };
+  const item = data[catId].completed[idx];
+  editStar = item.stars || 0;
+  document.getElementById("edit-item-title").textContent = item.title;
+  document.getElementById("edit-note").value = item.review || "";
+  updateStars("edit-stars", editStar);
+  document.getElementById("edit-modal").style.display = "flex";
+}
+
+function saveEdit() {
+  if (!editTarget) return;
+  const { catId, idx } = editTarget;
+  data[catId].completed[idx].review = document.getElementById("edit-note").value.trim();
+  data[catId].completed[idx].stars = editStar;
+  editTarget = null;
+  document.getElementById("edit-modal").style.display = "none";
+  save(); render(); toast("Updated");
+}
+
+function closeEditModal() {
+  editTarget = null;
+  document.getElementById("edit-modal").style.display = "none";
+}
+
+// Modal overlay click handled via onclick attribute
+
+load().then(() => render());
+</script>
+
+<div class="modal-overlay" id="review-modal" style="display:none" onclick="if(event.target===this)skipReview()">
+  <div class="modal">
+    <div class="modal-title" id="modal-item-title"></div>
+    <div class="modal-sub">how was it?</div>
+    <div class="stars" id="modal-stars">
+      <span class="star" onclick="setStar(1)">★</span>
+      <span class="star" onclick="setStar(2)">★</span>
+      <span class="star" onclick="setStar(3)">★</span>
+      <span class="star" onclick="setStar(4)">★</span>
+      <span class="star" onclick="setStar(5)">★</span>
+    </div>
+    <textarea class="modal-textarea" id="modal-note" placeholder="A few words... (optional)" rows="3"></textarea>
+    <div class="modal-btns">
+      <button class="form-submit" style="flex:2" onclick="confirmDone()">Log it →</button>
+      <button class="form-submit" style="flex:1;background:#aaa" onclick="skipReview()">Skip</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="edit-modal" style="display:none" onclick="if(event.target===this)closeEditModal()">
+  <div class="modal">
+    <div class="modal-title" id="edit-item-title"></div>
+    <div class="modal-sub">edit your thoughts</div>
+    <div class="stars" id="edit-stars">
+      <span class="star" onclick="setEditStar(1)">★</span>
+      <span class="star" onclick="setEditStar(2)">★</span>
+      <span class="star" onclick="setEditStar(3)">★</span>
+      <span class="star" onclick="setEditStar(4)">★</span>
+      <span class="star" onclick="setEditStar(5)">★</span>
+    </div>
+    <textarea class="modal-textarea" id="edit-note" placeholder="A few words... (optional)" rows="3"></textarea>
+    <div class="modal-btns">
+      <button class="form-submit" style="flex:2" onclick="saveEdit()">Save →</button>
+      <button class="form-submit" style="flex:1;background:#aaa" onclick="closeEditModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
