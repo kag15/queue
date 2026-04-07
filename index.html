@@ -761,27 +761,37 @@ let data = {};
 let saveTimer = null;
 
 async function load() {
+  // Load from local cache instantly
+  const s = localStorage.getItem("myqueue_v7");
+  if (s) { try { data = JSON.parse(s); } catch(e) { data = JSON.parse(JSON.stringify(DEFAULT)); } }
+  else { data = JSON.parse(JSON.stringify(DEFAULT)); }
+
+  // Sync from JSONBin in background
+  syncFromCloud();
+}
+
+async function syncFromCloud() {
   try {
     if (BIN_ID) {
       const res = await fetch(`${JSONBIN_URL}/${BIN_ID}`, {
         method: "GET",
-        headers: { 
-          "X-Bin-Meta": "false"
-        }
+        headers: { "X-Bin-Meta": "false" }
       });
       if (res.ok) {
         const json = await res.json();
-        console.log("JSONBin response:", JSON.stringify(json).slice(0,100));
-        data = json.record || json;
-        localStorage.setItem("myqueue_v7", JSON.stringify(data));
-        setTimeout(() => toast("✓ Synced"), 800);
-        return;
-      } else {
-        console.log("JSONBin responded:", res.status);
+        const fresh = json.record || json;
+        const localStr = JSON.stringify(data);
+        const freshStr = JSON.stringify(fresh);
+        if (localStr !== freshStr) {
+          // Data changed on another device — update UI
+          data = fresh;
+          localStorage.setItem("myqueue_v7", freshStr);
+          render();
+        }
+        toast("✓ Synced");
       }
     } else {
-      const saved = localStorage.getItem("myqueue_v7");
-      data = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEFAULT));
+      // No bin yet — create one
       const res = await fetch(JSONBIN_URL, {
         method: "POST",
         headers: {
@@ -796,20 +806,11 @@ async function load() {
         const json = await res.json();
         BIN_ID = json.metadata.id;
         localStorage.setItem("queue_bin_id", BIN_ID);
-        console.log("Created JSONBin ✓ ID:", BIN_ID);
-      } else {
-        const txt = await res.text();
-        console.log("JSONBin create failed:", res.status, txt);
       }
-      return;
     }
   } catch(e) {
-    console.log("JSONBin error:", e.message);
+    console.log("Sync failed:", e.message);
   }
-  const s = localStorage.getItem("myqueue_v7");
-  if (s) { try { data = JSON.parse(s); console.log("Using local storage"); return; } catch(e){} }
-  console.log("Using defaults");
-  data = JSON.parse(JSON.stringify(DEFAULT));
 }
 
 function save() {
