@@ -812,7 +812,7 @@ function renderNow() {
     card.innerHTML = `
       ${chip(item.catId)}
       <div class="now-card-title" style="color:#111111">${item.title}</div>
-      ${desc ? `<div class="now-card-note">${desc}</div>` : ""}
+      ${item.note ? `<div class="now-card-note">${item.note}</div>` : ""}
       <div class="now-card-btns">
         <button class="btn solid" onclick="markNowDone('${item.catId}',${item.id})">✓ Done</button>
         <button class="btn" onclick="nowBack('${item.catId}',${item.id})">Pause</button>
@@ -847,7 +847,7 @@ function renderUpNext() {
           <div class="q-row-num${isNext?" next":""}">${isNext ? "Next up" : "#"+(idx+1)}</div>
           <a href="${item.url || `https://www.google.com/search?q=${encodeURIComponent(item.title)}`}" target="_blank" style="text-decoration:none;display:block" class="q-row-title${isNext?" next":""}">${item.title}</a>
           ${item.note ? `<div class="q-row-note">${item.note}</div>` : ""}
-          ${isNext && desc ? `<div class="q-row-desc">${desc}</div>` : ""}
+
 
         </div>
         <div class="q-row-actions">
@@ -901,7 +901,7 @@ function renderLibrary() {
       <div class="lib-body">
         <a href="${item.url || `https://www.google.com/search?q=${encodeURIComponent(item.title)}`}" target="_blank" style="text-decoration:none;display:block" class="lib-title">${item.title}</a>
         ${item.note ? `<div class="lib-note">${item.note}</div>` : ""}
-        ${desc ? `<div class="lib-desc">${desc}</div>` : ""}
+
 
       </div>
       <div class="lib-actions">
