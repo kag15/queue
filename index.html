@@ -709,13 +709,14 @@ async function load() {
 async function syncFromCloud() {
   try {
     if (BIN_ID) {
-      const res = await fetch(`${JSONBIN_URL}/${BIN_ID}`, {
+      const res = await fetch(`${JSONBIN_URL}/${BIN_ID}/latest`, {
         method: "GET",
-        headers: { "X-Bin-Meta": "false" }
+        headers: { "X-Access-Key": JSONBIN_KEY, "X-Bin-Meta": "false" }
       });
       if (res.ok) {
         const json = await res.json();
         const fresh = json.record || json;
+        setSyncStatus(true);
         const localStr = JSON.stringify(data);
         const freshStr = JSON.stringify(fresh);
         if (localStr !== freshStr) {
@@ -724,7 +725,7 @@ async function syncFromCloud() {
           localStorage.setItem("myqueue_v7", freshStr);
           render();
         }
-        toast("✓ Synced");
+        setSyncStatus(true);
       }
     } else {
       // No bin yet — create one
@@ -746,6 +747,7 @@ async function syncFromCloud() {
     }
   } catch(e) {
     console.log("Sync failed:", e.message);
+    setSyncStatus(false);
   }
 }
 
