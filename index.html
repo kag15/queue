@@ -648,7 +648,7 @@
 
 <div class="header">
   <div class="wordmark">Queue</div>
-  <div class="wordmark-sub">curated with claude &nbsp;<span id="sync-status" style="color:#ccc">●</span></div>
+  <div class="wordmark-sub">curated with claude <span id="sync-status" style="font-size:0.5rem;letter-spacing:0.1em;color:#ccc">●</span></div>
   <div class="tabs">
     <button class="tab active" onclick="showTab('now',this)">Now</button>
     <button class="tab" onclick="showTab('upnext',this)">Up Next</button>
@@ -1259,7 +1259,15 @@ function closeEditModal() {
 
 // Modal overlay click handled via onclick attribute
 
-load().then(() => render());
+function setSyncStatus(ok) {
+  const el = document.getElementById("sync-status");
+  if (!el) return;
+  el.textContent = "●";
+  el.style.color = ok ? "#7a9e7e" : "#c45f3f";
+  el.title = ok ? "Synced with cloud" : "Offline — saved locally";
+}
+
+load().then(() => { render(); });
 </script>
 
 <div class="modal-overlay" id="review-modal" style="display:none" onclick="if(event.target===this)skipReview()">
