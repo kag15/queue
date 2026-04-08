@@ -7,8 +7,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Queue">
 <title>Queue</title>
-<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiI+CiAgPHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIHJ4PSIxMTUiIGZpbGw9IiNGQkIyOEIiLz4KICA8IS0tIFN0YWNrZWQgYm9vayBzcGluZXMgLS0+CiAgPHJlY3QgeD0iMTIwIiB5PSIxNDAiIHdpZHRoPSIyNzIiIGhlaWdodD0iNzIiIHJ4PSIxMCIgZmlsbD0id2hpdGUiLz4KICA8cmVjdCB4PSIxMjAiIHk9IjIyMiIgd2lkdGg9IjI3MiIgaGVpZ2h0PSI3MiIgcng9IjEwIiBmaWxsPSJ3aGl0ZSIgb3BhY2l0eT0iMC43MiIvPgogIDxyZWN0IHg9IjEyMCIgeT0iMzA0IiB3aWR0aD0iMjcyIiBoZWlnaHQ9IjcyIiByeD0iMTAiIGZpbGw9IndoaXRlIiBvcGFjaXR5PSIwLjQ0Ii8+CiAgPCEtLSBzcGluZSBsaW5lcyAtLT4KICA8cmVjdCB4PSIxNTIiIHk9IjE0MCIgd2lkdGg9IjYiIGhlaWdodD0iNzIiIHJ4PSIzIiBmaWxsPSIjRkJCMjhCIiBvcGFjaXR5PSIwLjQiLz4KICA8cmVjdCB4PSIxNTIiIHk9IjIyMiIgd2lkdGg9IjYiIGhlaWdodD0iNzIiIHJ4PSIzIiBmaWxsPSIjRkJCMjhCIiBvcGFjaXR5PSIwLjQiLz4KICA8cmVjdCB4PSIxNTIiIHk9IjMwNCIgd2lkdGg9IjYiIGhlaWdodD0iNzIiIHJ4PSIzIiBmaWxsPSIjRkJCMjhCIiBvcGFjaXR5PSIwLjQiLz4KPC9zdmc+">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiI+CiAgPHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIHJ4PSIxMTUiIGZpbGw9IiNGQkIyOEIiLz4KICA8IS0tIFN0YWNrZWQgYm9vayBzcGluZXMgLS0+CiAgPHJlY3QgeD0iMTIwIiB5PSIxNDAiIHdpZHRoPSIyNzIiIGhlaWdodD0iNzIiIHJ4PSIxMCIgZmlsbD0id2hpdGUiLz4KICA8cmVjdCB4PSIxMjAiIHk9IjIyMiIgd2lkdGg9IjI3MiIgaGVpZ2h0PSI3MiIgcng9IjEwIiBmaWxsPSJ3aGl0ZSIgb3BhY2l0eT0iMC43MiIvPgogIDxyZWN0IHg9IjEyMCIgeT0iMzA0IiB3aWR0aD0iMjcyIiBoZWlnaHQ9IjcyIiByeD0iMTAiIGZpbGw9IndoaXRlIiBvcGFjaXR5PSIwLjQ0Ii8+CiAgPCEtLSBzcGluZSBsaW5lcyAtLT4KICA8cmVjdCB4PSIxNTIiIHk9IjE0MCIgd2lkdGg9IjYiIGhlaWdodD0iNzIiIHJ4PSIzIiBmaWxsPSIjRkJCMjhCIiBvcGFjaXR5PSIwLjQiLz4KICA8cmVjdCB4PSIxNTIiIHk9IjIyMiIgd2lkdGg9IjYiIGhlaWdodD0iNzIiIHJ4PSIzIiBmaWxsPSIjRkJCMjhCIiBvcGFjaXR5PSIwLjQiLz4KICA8cmVjdCB4PSIxNTIiIHk9IjMwNCIgd2lkdGg9IjYiIGhlaWdodD0iNzIiIHJ4PSIzIiBmaWxsPSIjRkJCMjhCIiBvcGFjaXR5PSIwLjQiLz4KPC9zdmc+">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="apple-touch-icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500;700;800&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -677,83 +677,17 @@ const CATS = {
   longreads: { label:"Long Reads", bg:"#6B515E", text:"#ffffff" },
 };
 
-const DESCS = {
-  "The Nightingale": "Two sisters in Nazi-occupied France make impossible choices. Devastating.",
-  "Yesterday": "A Japanese novel about memory, friendship, and the stories we tell ourselves.",
-  "The Goldfinch": "A boy survives a museum bombing and carries a stolen painting through life.",
-  "Everything I Never Told You": "A Chinese-American family unravels after their daughter's death.",
-  "The Vanishing Half": "Twin sisters who choose entirely different lives. About identity and reinvention.",
-  "Eleanor Oliphant is Completely Fine": "A socially isolated woman slowly opens up to the world.",
-  "Normal People": "Two Irish students fall in and out of love. Intimate and beautifully observed.",
-  "All the Light We Cannot See": "A blind French girl and a German soldier in WWII. Pulitzer-winning.",
-  "Life After Life": "A woman lives the same life over and over, each time differently.",
-  "Past Lives": "Childhood sweethearts separated by emigration reunite decades later.",
-  "The Worst Person in the World": "A young Oslo woman navigates love, career, and who she wants to be.",
-  "Aftersun": "A daughter revisits holiday memories with her young father. Stays with you.",
-  "Before Sunrise": "Two strangers spend one night talking in Vienna. The best conversation film.",
-  "In the Mood for Love": "Unspoken longing between two neighbours. Visually stunning.",
-  "Before Sunset": "The Vienna couple reunite in Paris nine years later.",
-  "Before Midnight": "Jesse and Céline wrestle with what long-term love really costs.",
-  "Wheel of Fortune and Fantasy": "Three short films about women navigating regret and desire.",
-  "Marriage Story": "A marriage ends. Both people are right. Emotionally devastating.",
-  "Sentimental Value": "A father and daughters reckon with loss. Joachim Trier · 2025.",
-  "Fleabag": "A sharp, funny, grieving woman speaks directly to you. One of the best things made.",
-  "The Bear": "A chef takes over his family's sandwich shop. Stressful, brilliant, human.",
-  "I May Destroy You": "A writer reconstructs the night she was assaulted. Raw and unforgettable.",
-  "Succession": "Four siblings war over a media empire. The best writing on television.",
-  "Severance": "Office workers have their memories split between work and home. Beautifully strange.",
-  "My Brilliant Friend": "Two women's friendship across a lifetime in Naples. Extraordinary.",
-  "The Moth": "Real people tell true stories live on stage. Honest and often life-changing.",
-  "This American Life": "One theme, multiple stories, every week. The gold standard.",
-  "Modern Love": "NYT essays about love and connection, read by actors.",
-  "Heavyweight": "Jonathan Goldstein helps people revisit the moments that changed their lives.",
-  "Radiolab": "Big questions about science and what it means to be alive.",
-  "You're Wrong About": "Reexamines misremembered cultural moments with warmth.",
-  "Revisionist History": "Malcolm Gladwell reconsiders overlooked events from the past.",
-  "Serial": "The podcast that started narrative true crime. Still compelling.",
-  "Longreads newsletter": "Curated narrative nonfiction delivered weekly.",
-  "The Browser": "Five outstanding articles from across the web, every day.",
-  "The Atlantic": "Long-form journalism on culture, politics, and ideas.",
-  "The Guardian Long Read": "Free, excellent range. Often the best piece you'll read all week.",
-  "Love Story": "The whirlwind romance and marriage of JFK Jr. and Carolyn Bessette — glamour, tragedy, and the crushing weight of a famous name.",
-};
-
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 let nextId = 500;
 let activeLibCat = "books";
 let activeDoneCat = "all";
 
 const DEFAULT = {
-  books: {
-    now: [{ id:100, title:"The Nightingale", note:"Kristin Hannah" }],
-    upnext: [],
-    library: [],
-    completed: [],
-  },
-  film: {
-    now: [],
-    upnext: [],
-    library: [],
-    completed: [],
-  },
-  tv: {
-    now: [{ id:101, title:"Love Story", note:"currently watching" }],
-    upnext: [],
-    library: [],
-    completed: [],
-  },
-  podcast: {
-    now: [{ id:102, title:"The Moth", note:"commute" }],
-    upnext: [],
-    library: [],
-    completed: [],
-  },
-  longreads: {
-    now: [],
-    upnext: [],
-    library: [],
-    completed: [],
-  },
+  books:     { now: [], upnext: [], library: [], completed: [] },
+  film:      { now: [], upnext: [], library: [], completed: [] },
+  tv:        { now: [], upnext: [], library: [], completed: [] },
+  podcast:   { now: [], upnext: [], library: [], completed: [] },
+  longreads: { now: [], upnext: [], library: [], completed: [] },
 };
 
 const JSONBIN_KEY = "$2a$10$TZL/GGzf0JuZpdQY54fuWuC98U6.5H87G3Cz0pOgy/MyJ5bzv8xeK";
@@ -870,7 +804,7 @@ function renderNow() {
 
   items.forEach(item => {
     const c = CATS[item.catId];
-    const desc = DESCS[item.title] || item.note || "";
+    const desc = item.note || "";
     const card = document.createElement("div");
     card.className = "now-card";
     card.style.background = "#ffffff";
@@ -904,7 +838,7 @@ function renderUpNext() {
 
     const list = document.createElement("div");
     items.forEach((item, idx) => {
-      const desc = DESCS[item.title] || "";
+      const desc = item.note || "";
       const isNext = idx === 0;
       const row = document.createElement("div");
       row.className = "q-row";
@@ -960,7 +894,7 @@ function renderLibrary() {
   }
 
   items.forEach(item => {
-    const desc = DESCS[item.title] || "";
+    const desc = item.note || "";
     const row = document.createElement("div");
     row.className = "lib-row";
     row.innerHTML = `
